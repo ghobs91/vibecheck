@@ -12,31 +12,40 @@
 
 (() => {
     const websiteSelectorDict = {
-        'www.reddit.com': {
+        'reddit.com': {
             'subject': '[slot="full-post-link"]',
             'parent': 'article',
         },
+        'bsky.app': {
+            'subject': '[data-testid="postText"]',
+            'parent': '[role="link"]',
+        }
     };
 
     const processSubjects = (rootNode) => {
-        const subjects = rootNode.querySelectorAll(websiteSelectorDict[window.location.hostname].subject);
-        subjects.forEach(subject => {
-            const text = subject.innerText.trim();
-            if (text.length > 0) {
-                chrome.runtime.sendMessage({ action: 'classify', text }, (response) => {
-                    if (response && Array.isArray(response)) {
-                        const negativeResult = response.find(item => item.label.toLowerCase() === 'negative');
-                        if (negativeResult && negativeResult.score >= 0.8) {
-                            const parentToHide = subject.closest(websiteSelectorDict[window.location.hostname].parent);
-                            if (parentToHide) {
-                                parentToHide.style.opacity = '0.5';
-                                // parentToHide.style.display = 'none';
+        const matchingKey = Object.keys(websiteSelectorDict).find(key =>
+            window.location.hostname.includes(key)
+        );
+        if (matchingKey) {
+            const subjects = rootNode.querySelectorAll(websiteSelectorDict[matchingKey].subject);
+            subjects.forEach(subject => {
+                const text = subject.innerText.trim();
+                if (text.length > 0) {
+                    chrome.runtime.sendMessage({ action: 'classify', text }, (response) => {
+                        if (response && Array.isArray(response)) {
+                            const negativeResult = response.find(item => item.label.toLowerCase() === 'negative');
+                            if (negativeResult && negativeResult.score >= 0.8) {
+                                const parentToHide = subject.closest(websiteSelectorDict[matchingKey].parent);
+                                if (parentToHide) {
+                                    // parentToHide.style.opacity = '0.1';
+                                    parentToHide.style.display = 'none';
+                                }
                             }
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
     };
 
     // Process subjects that are already on the page.
