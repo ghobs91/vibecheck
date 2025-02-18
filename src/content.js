@@ -19,7 +19,11 @@
         'bsky.app': {
             'subject': '[data-testid="postText"]',
             'parent': '[role="link"]',
-        }
+        },
+        'x.com': {
+            'subject': '[data-testid="tweetText"]',
+            'parent': 'article',
+        },
     };
 
     const processSubjects = (rootNode) => {
