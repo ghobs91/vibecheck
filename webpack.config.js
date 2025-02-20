@@ -1,4 +1,3 @@
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -27,8 +26,8 @@ const config = {
         new CopyPlugin({
             patterns: [
                 {
-                    from: "public",
-                    to: "." // Copies to build folder
+                    from: "manifest.json",   // Now reference the manifest at the root
+                    to: ".", // Copies to the build folder
                 },
                 {
                     from: "src/popup.css",
