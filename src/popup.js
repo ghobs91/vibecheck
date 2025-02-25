@@ -1,21 +1,20 @@
 // popup.js - handles interaction with the extension's popup, sends requests to the
 // service worker (background.js), and updates the popup's UI (popup.html) on completion.
 
-const inputElement = document.getElementById('text');
-const outputElement = document.getElementById('output');
+const toggleButton = document.getElementById('toggleActive');
 
-// Listen for changes made to the textbox.
-inputElement.addEventListener('input', (event) => {
+// Set initial button state based on stored value (default to active if not set)
+chrome.storage.local.get({ extensionActive: true }, (result) => {
+    const isActive = result.extensionActive;
+    toggleButton.textContent = isActive ? 'Deactivate Extension' : 'Activate Extension';
+});
 
-    // Bundle the input data into a message.
-    const message = {
-        action: 'classify',
-        text: event.target.value,
-    }
-
-    // Send this message to the service worker.
-    chrome.runtime.sendMessage(message, (response) => {
-        // Handle results returned by the service worker (`background.js`) and update the popup's UI.
-        outputElement.innerText = JSON.stringify(response, null, 2);
+// Toggle the extension active state on button click.
+toggleButton.addEventListener('click', () => {
+    chrome.storage.local.get({ extensionActive: true }, (result) => {
+        const newState = !result.extensionActive;
+        chrome.storage.local.set({ extensionActive: newState }, () => {
+            toggleButton.textContent = newState ? 'Deactivate Extension' : 'Activate Extension';
+        });
     });
 });

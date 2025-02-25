@@ -27,17 +27,21 @@
             subjects.forEach(subject => {
                 const text = subject.innerText.trim();
                 if (text.length > 0) {
-                    browser.runtime.sendMessage({ action: 'classify', text }, (response) => {
-                        if (response && Array.isArray(response)) {
-                            const negativeResult = response.find(item => item.label.toLowerCase() === 'negative');
-                            if (negativeResult && negativeResult.score >= 0.8) {
-                                const parentToHide = subject.closest(websiteSelectorDict[matchingKey].parent);
-                                if (parentToHide) {
-                                    // parentToHide.style.opacity = '0.1';
-                                    parentToHide.style.display = 'none';
+                    // Check if extension is active
+                    chrome.storage.local.get({ extensionActive: true }, (result) => {
+                        if (!result.extensionActive) return;
+                        browser.runtime.sendMessage({ action: 'classify', text }, (response) => {
+                            if (response && Array.isArray(response)) {
+                                console.log(`text classification score: ${response[0].score}`);
+                                const negativeResult = response.find(item => item.label.toLowerCase() === 'negative');
+                                if (negativeResult && negativeResult.score >= 0.8) {
+                                    const parentToHide = subject.closest(websiteSelectorDict[matchingKey].parent);
+                                    if (parentToHide) {
+                                        parentToHide.style.display = 'none';
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 }
             });
@@ -51,7 +55,6 @@
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             mutation.addedNodes.forEach(node => {
-                // Only process element nodes.
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     processSubjects(node);
                 }
