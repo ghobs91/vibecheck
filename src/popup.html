@@ -72,6 +72,9 @@
             width: 100%;
             height: 40%;
             border-radius: 0 0 10px 10px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding-top: 50px;
         }
 
         .counter {
@@ -95,12 +98,11 @@
 <body>
     <div class="container">
         <div class="toggle">
-            <h1>VibeCheck</h1>
             <button id="toggleActive" class="power-button inactive">Off</button>
-        </div>
-        <div class="counter">
-            <p class="counter-text"><span id="negative-counter">0</span> Negative vibes blocked</p>
-            <pre id="output"></pre>
+            <div class="counter">
+                <p class="counter-text"><span id="negative-counter">0</span> Negative vibes blocked</p>
+                <pre id="output"></pre>
+            </div>
         </div>
     </div>
 </body>

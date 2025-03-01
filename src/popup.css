@@ -6,6 +6,85 @@
     box-sizing: border-box;
 }
 
+body {
+    font-family: "Roboto", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    background-color: #444;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: rgb(52, 52, 52);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 16px;
+    color: #333;
+    margin: 20px 0;
+}
+
+pre {
+    background-color: #f4f4f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: left;
+    color: #333;
+    font-size: 14px;
+    overflow-x: auto;
+}
+
+.toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: black;
+    width: 100%;
+    height: 40%;
+    border-radius: 0 0 10px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.counter {
+    width: 100%;
+    height: 60%;
+}
+
+.counter-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #ddd; /* Light gray for better readability */
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.2);
+}
+
+#output {
+    display: none;
+}
+
 h1 {
     font-size: 32px;
     text-align: center;
@@ -28,6 +107,9 @@ h2 {
     padding: 20px;
     border-radius: 16px; /* Adjust the value as needed */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+    background-image: url("../public/images/background.jpeg");
+    background-size: contain;
+
 }
 
 html,
