@@ -24,17 +24,26 @@ class PipelineSingleton {
     }
 }
 
-// Create generic classify function, which will be reused for the different types of events.
-const classify = async (text) => {
-    // Get the pipeline instance. This will load and build the model when run for the first time.
-    let model = await PipelineSingleton.getInstance((data) => {
-        // You can track the progress of the pipeline creation here.
-        // e.g., you can send `data` back to the UI to indicate a progress bar
-        // console.log('progress', data)
-    });
+// Load the initial count from storage
+let negativeCount = 0;
+chrome.storage.local.get(['negativeCount'], (result) => {
+    if (result.negativeCount !== undefined) {
+        negativeCount = result.negativeCount;
+    }
+});
 
-    // Actually run the model on the input text
+const classify = async (text) => {
+    let model = await PipelineSingleton.getInstance();
     let result = await model(text);
+
+    // Check if the result contains negative sentiment
+    const negativeResult = result.find(item => item.label.toLowerCase() === 'negative');
+    if (negativeResult && negativeResult.score >= 0.8) {
+        negativeCount++;
+        chrome.storage.local.set({ negativeCount: negativeCount });
+        chrome.runtime.sendMessage({ action: 'updateCounter', count: negativeCount });
+    }
+
     return result;
 };
 

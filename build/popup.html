@@ -5,16 +5,103 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeCheck</title>
     <!-- Load styles -->
     <link rel="stylesheet" href="popup.css" />
-    <!-- Remove background.js and content.js from popup.html -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script defer src="popup.js"></script>
+    <style>
+        body {
+            font-family: "Roboto", serif;
+            font-optical-sizing: auto;
+            font-weight: 300;
+            font-style: normal;
+            font-variation-settings: "wdth" 100;
+            background-color: #444;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: rgb(52, 52, 52);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: #f4f4f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            text-align: left;
+            color: #333;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: black;
+            width: 100%;
+            height: 40%;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .counter {
+            width: 100%;
+            height: 60%;
+        }
+
+        .counter-text {
+            font-size: 18px;
+            font-weight: 500;
+            color: #ddd; /* Light gray for better readability */
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.2);
+        }
+
+        #output {
+            display: none;
+        }
+    </style>
 <script defer src="background.js"></script><script defer src="popup.js"></script><script defer src="content.js"></script></head>
 
 <body>
     <div class="container">
-        <button id="toggleActive">Toggle Extension</button>
-        <pre id="output"></pre>
+        <div class="toggle">
+            <h1>VibeCheck</h1>
+            <button id="toggleActive" class="power-button inactive">Off</button>
+        </div>
+        <div class="counter">
+            <p class="counter-text"><span id="negative-counter">0</span> Negative vibes blocked</p>
+            <pre id="output"></pre>
+        </div>
     </div>
 </body>
 
