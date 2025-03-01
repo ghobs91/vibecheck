@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Vibecheck",
-    "description": "Transformers.js | Sample browser extension",
+    "description": "Filter negativity out of your web experience ",
     "version": "0.0.1",
     "permissions": [
       "activeTab",
