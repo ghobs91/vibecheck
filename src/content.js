@@ -30,7 +30,7 @@
                     // Check if extension is active
                     chrome.storage.local.get({ extensionActive: true }, (result) => {
                         if (!result.extensionActive) return;
-                        browser.runtime.sendMessage({ action: 'classify', text }, (response) => {
+                        browser.runtime.sendMessage({ action: 'sentiment-analysis', text }, (response) => {
                             if (response && Array.isArray(response)) {
                                 console.log(`text classification score: ${response[0].score}`);
                                 const negativeResult = response.find(item => item.label.toLowerCase() === 'negative');
@@ -42,6 +42,15 @@
                                 }
                             }
                         });
+
+                        // work in progress topic filtering
+                        // browser.runtime.sendMessage({ action: 'classify-topic', text }, (response) => {
+                        //     if (response) {
+                        //         console.log(`classifyTopic output recieved from content.js: ${response}`);
+                        //     }
+                        // });
+                        // 
+
                     });
                 }
             });
