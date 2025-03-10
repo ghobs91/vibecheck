@@ -4,6 +4,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     const toggleButton = document.getElementById('toggleActive');
     const counterElement = document.getElementById('negative-counter');
+    const topicInput = document.getElementById('topic-input');
+    const addTopicButton = document.getElementById('add-topic');
+    const topicList = document.getElementById('topic-list');
+    const suggestedTopicList = document.getElementById('suggested-topic-list');
 
     // Set initial button state based on stored value (default to active if not set)
     try {
@@ -53,4 +57,72 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         console.error('Element with ID "negative-counter" not found.');
     }
+
+    // Load the initial list of topics from storage
+    chrome.storage.local.get(['blockedTopics'], (result) => {
+        if (result.blockedTopics !== undefined) {
+            result.blockedTopics.forEach(topic => {
+                addTopicToList(topic);
+            });
+        }
+    });
+
+    // Add topic to the list and save it to storage
+    addTopicButton.addEventListener('click', () => {
+        const topic = topicInput.value.trim();
+        if (topic) {
+            chrome.storage.local.get(['blockedTopics'], (result) => {
+                let topics = result.blockedTopics || [];
+                if (!topics.includes(topic)) {
+                    topics.push(topic);
+                    chrome.storage.local.set({ blockedTopics: topics }, () => {
+                        addTopicToList(topic);
+                        topicInput.value = '';
+                    });
+                } else {
+                    console.log('Topic already exists');
+                }
+            });
+        }
+    });
+
+    function addTopicToList(topic) {
+        const li = document.createElement('li');
+        li.textContent = topic;
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'X';
+        removeButton.classList.add('remove-topic');
+        removeButton.addEventListener('click', () => {
+            removeTopicFromList(topic);
+        });
+        li.appendChild(removeButton);
+        topicList.appendChild(li);
+    }
+
+    function removeTopicFromList(topic) {
+        chrome.storage.local.get(['blockedTopics'], (result) => {
+            let topics = result.blockedTopics || [];
+            topics = topics.filter(t => t !== topic);
+            chrome.storage.local.set({ blockedTopics: topics }, () => {
+                topicList.innerHTML = '';
+                topics.forEach(t => addTopicToList(t));
+            });
+        });
+    }
+
+    // Suggested topics
+    const suggestedTopics = ['Politics', 'Religion', 'Violence', 'Drugs', 'Gambling'];
+    suggestedTopics.forEach(topic => {
+        const li = document.createElement('li');
+        li.textContent = topic;
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add';
+        addButton.classList.add('add-suggested-topic');
+        addButton.addEventListener('click', () => {
+            topicInput.value = topic;
+            addTopicButton.click();
+        });
+        li.appendChild(addButton);
+        suggestedTopicList.appendChild(li);
+    });
 });
