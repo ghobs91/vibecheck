@@ -40,29 +40,12 @@
                 chrome.storage.local.get({ extensionActive: true }, (result) => {
                     if (!result.extensionActive) return;
 
-                    // Batch sentiment analysis
-                    browser.runtime.sendMessage({ action: 'sentiment-analysis', texts }, (response) => {
+                    // Send a single message for both sentiment analysis and topic classification
+                    browser.runtime.sendMessage({ action: 'analyze-text', texts }, (response) => {
                         if (response && Array.isArray(response)) {
                             response.forEach((result, index) => {
-                                console.log(`text classification score: ${result[0].score}`);
-                                const negativeResult = result.find(item => item.label.toLowerCase() === 'negative');
-                                if (negativeResult && negativeResult.score >= 0.8) {
-                                    const parentToHide = subjectElements[index].closest(websiteSelectorDict[matchingKey].parent);
-                                    if (parentToHide) {
-                                        parentToHide.style.display = 'none';
-                                    }
-                                }
-                            });
-                        }
-                    });
-
-                    // Batch topic classification
-                    browser.runtime.sendMessage({ action: 'classify-topic', texts }, (response) => {
-                        if (response && Array.isArray(response)) {
-                            response.forEach((result, index) => {
-                                const matchesBlockedTopic = result.scores.find(score => score >= 0.8);
-                                console.log(`This text matches a blocked topic: ${texts[index]}`);
-                                if (matchesBlockedTopic) {
+                                const { negativeResult, matchesBlockedTopic } = result;
+                                if ((negativeResult && negativeResult.score >= 0.8) || matchesBlockedTopic) {
                                     const parentToHide = subjectElements[index].closest(websiteSelectorDict[matchingKey].parent);
                                     if (parentToHide) {
                                         parentToHide.style.display = 'none';

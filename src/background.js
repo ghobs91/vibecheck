@@ -58,55 +58,41 @@ const sentimentAnalysis = async (text) => {
         chrome.runtime.sendMessage({ action: 'updateCounter', count: negativeCount });
     }
 
-    return result;
+    return negativeResult;
 };
 
 const classifyTopic = async (text) => {
-    const classifier = await pipeline('zero-shot-classification', 'Xenova/nli-deberta-v3-xsmall');
+    const classifier = await TopicPipelineSingleton.getInstance();
     
     // Retrieve the list of topics from storage
-    let labels = [];
-    chrome.storage.local.get(['blockedTopics'], (result) => {
-        if (result.blockedTopics !== undefined) {
-            labels = result.blockedTopics;
-        }
+    let labels = await new Promise((resolve) => {
+        chrome.storage.local.get(['blockedTopics'], (result) => {
+            resolve(result.blockedTopics || []);
+        });
     });
 
     const output = await classifier(text, labels, { multi_label: true });
-    return output;
+    const matchesBlockedTopic = output.scores.find(score => score >= 0.8);
+    return matchesBlockedTopic;
 };
 
 ////////////////////// Message Events /////////////////////
 // 
 // Listen for messages from the UI, process it, and send the result back.
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('sender', sender);
-    if (message.action === 'sentiment-analysis') {
-        // Run model prediction asynchronously
+    if (message.action === 'analyze-text') {
+        // Run model predictions asynchronously
         (async function () {
             try {
-                // Perform classification
-                let result = await sentimentAnalysis(message.text);
-                // Send response back to UI
-                sendResponse(result);
+                const results = await Promise.all(message.texts.map(async (text) => {
+                    const negativeResult = await sentimentAnalysis(text);
+                    const matchesBlockedTopic = await classifyTopic(text);
+                    return { negativeResult, matchesBlockedTopic };
+                }));
+                sendResponse(results);
             } catch (error) {
-                console.error('Error during sentiment analysis:', error);
-                sendResponse({ error: 'Sentiment analysis failed' });
-            }
-        })();
-        // return true to indicate we will send a response asynchronously
-        return true;
-    } else if (message.action === 'classify-topic') {
-        // Run model prediction asynchronously
-        (async function () {
-            try {
-                // Perform classification
-                let result = await classifyTopic(message.text);
-                // Send response back to UI
-                sendResponse(result);
-            } catch (error) {
-                console.error('Error during topic classification:', error);
-                sendResponse({ error: 'Topic classification failed' });
+                console.error('Error during text analysis:', error);
+                sendResponse({ error: 'Text analysis failed' });
             }
         })();
         // return true to indicate we will send a response asynchronously
