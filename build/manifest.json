@@ -4,9 +4,7 @@
   "description": "Filter negativity out of your web experience",
   "version": "0.0.1",
   "permissions": [
-    "activeTab",
     "scripting",
-    "contextMenus",
     "storage",
     "unlimitedStorage"
   ],
@@ -24,14 +22,6 @@
   ],
   "minimum_chrome_version": "92",
   "action": {
-    "default_icon": {
-      "16": "icons/icon.png",
-      "19": "icons/icon.png",
-      "24": "icons/icon.png",
-      "32": "icons/icon.png",
-      "38": "icons/icon.png",
-      "48": "icons/icon.png"
-    },
     "default_title": "Transformers.js",
     "default_popup": "popup.html"
   },
