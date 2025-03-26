@@ -22,13 +22,13 @@ body {
 }
 
 .container {
-    background-color: rgb(52, 52, 52);
+    background-color: #111314;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 0;
     text-align: center;
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -116,13 +116,14 @@ li .remove-topic {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: black;
     width: 100%;
     height: 40%;
-    border-radius: 0 0 10px 10px;
-    background: rgba(0, 0, 0, 0.5);
+    border-radius: 0 0 18px 18px;
+    background-color: #111314;
     backdrop-filter: blur(10px);
     padding-top: 50px;
+    border: 1px #111314 solid;
+    box-shadow: 0 2px 14px -1px black;
 }
 
 .counter {
@@ -194,13 +195,13 @@ body {
 }
 
 .power-button.active {
-    box-shadow: 0 0 20px 4px green;
-    animation: pulseGlow 1.5s infinite alternate;
+    /* box-shadow: 0 0 20px 4px green;
+    animation: pulseGlow 1.5s infinite alternate; */
     background: rgba(0, 255, 0, 0.2);
 }
 
 .power-button.inactive {
-    box-shadow: 0 0 10px 2px red;
+    /* box-shadow: 0 0 10px 2px red; */
     background: rgba(255, 0, 0, 0.2);
 }
 
